@@ -9,7 +9,7 @@ from sklearn.metrics import pairwise_distances, euclidean_distances
 from sklearn.datasets import (load_iris, make_classification, make_regression,
                               make_spd_matrix)
 from numpy.testing import (assert_array_almost_equal, assert_array_equal,
-                           assert_allclose)
+                           assert_allclose, assert_raises)
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.utils.validation import check_X_y
 from sklearn.preprocessing import StandardScaler
@@ -324,6 +324,37 @@ class TestSCML(object):
       scml.fit(triplets)
     assert msg == raised_error.value.args[0]
 
+  @pytest.mark.parametrize("basis", ("lda", "triplet_diffs"))
+  def test_warm_start(self, basis):
+    X, y = load_iris(return_X_y=True)
+    # Test that warm_start=True leads to different weights in each fit call
+    scml = SCML_Supervised(basis=basis, n_basis=85, k_genuine=7, k_impostor=5,
+                           random_state=42, warm_start=True)
+    scml.fit(X, y)
+    w_1 = scml.w_
+    avg_grad_w_1 = scml.avg_grad_w_
+    ada_grad_w_1 = scml.ada_grad_w_
+    scml.fit(X, y)
+    w_2 = scml.w_
+    assert_raises(AssertionError, assert_array_almost_equal, w_1, w_2)
+    # And that default warm_start value is False and leads to same
+    # weights in each fit call
+    scml = SCML_Supervised(basis=basis, n_basis=85, k_genuine=7, k_impostor=5,
+                           random_state=42)
+    scml.fit(X, y)
+    w_3 = scml.w_
+    scml.fit(X, y)
+    w_4 = scml.w_
+    assert_array_almost_equal(w_3, w_4)
+    # But would lead to same results with warm_strat=True if same init params
+    # were used
+    scml.warm_start = True
+    scml.w_ = w_1
+    scml.avg_grad_w_ = avg_grad_w_1
+    scml.ada_grad_w_ = ada_grad_w_1
+    scml.fit(X, y)
+    w_5 = scml.w_
+    assert_array_almost_equal(w_2, w_5)
 
 class TestLSML(MetricTestCase):
   def test_iris(self):
