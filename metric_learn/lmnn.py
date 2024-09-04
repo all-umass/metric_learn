@@ -172,7 +172,7 @@ class LMNN(MahalanobisMixin, TransformerMixin):
                                               self.verbose,
                                               random_state=self.random_state)
     required_k = np.bincount(label_inds).min()
-    if self.n_neighbors > required_k:
+    if self.n_neighbors >= required_k:
       raise ValueError('not enough class labels for specified k'
                        ' (smallest class has %d)' % required_k)
 
