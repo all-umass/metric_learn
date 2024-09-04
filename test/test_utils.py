@@ -15,7 +15,7 @@ from metric_learn._util import (check_input, make_context, preprocess_tuples,
                                 check_y_valid_values_for_pairs,
                                 _auto_select_init, _pseudo_inverse_from_eig)
 from metric_learn import (ITML, LSML, MMC, RCA, SDML, Covariance, LFDA,
-                          LMNN, MLKR, NCA, ITML_Supervised, LSML_Supervised,
+                          LMNN_Supervised, MLKR, NCA, ITML_Supervised, LSML_Supervised,
                           MMC_Supervised, RCA_Supervised, SDML_Supervised,
                           SCML, SCML_Supervised, Constraints)
 from metric_learn.base_metric import (ArrayIndexer, MahalanobisMixin,
@@ -132,7 +132,7 @@ ids_pairs_learners = list(map(lambda x: x.__class__.__name__,
 
 classifiers = [(Covariance(), build_classification),
                (LFDA(), build_classification),
-               (LMNN(), build_classification),
+               (LMNN_Supervised(), build_classification),
                (NCA(), build_classification),
                (RCA(), build_classification),
                (ITML_Supervised(max_iter=5), build_classification),

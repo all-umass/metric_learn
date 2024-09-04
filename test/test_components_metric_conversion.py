@@ -7,7 +7,7 @@ from numpy.testing import assert_array_almost_equal, assert_allclose
 from metric_learn.sklearn_shims import ignore_warnings
 
 from metric_learn import (
-    LMNN, NCA, LFDA, Covariance, MLKR,
+    LMNN_Supervised, NCA, LFDA, Covariance, MLKR,
     LSML_Supervised, ITML_Supervised, SDML_Supervised, RCA_Supervised)
 from metric_learn._util import components_from_metric
 from metric_learn.exceptions import NonPSDError
@@ -42,7 +42,7 @@ class TestTransformerMetricConversion(unittest.TestCase):
     assert_array_almost_equal(L.T.dot(L), itml.get_mahalanobis_matrix())
 
   def test_lmnn(self):
-    lmnn = LMNN(n_neighbors=5, learn_rate=1e-6, verbose=False)
+    lmnn = LMNN_Supervised(n_neighbors=5, learn_rate=1e-6, verbose=False)
     lmnn.fit(self.X, self.y)
     L = lmnn.components_
     assert_array_almost_equal(L.T.dot(L), lmnn.get_mahalanobis_matrix())

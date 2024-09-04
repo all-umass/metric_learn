@@ -7,7 +7,7 @@ from sklearn.utils import check_random_state
 from metric_learn.sklearn_shims import (assert_allclose_dense_sparse,
                                         set_random_state, _get_args,
                                         is_public_parameter, get_scorer)
-from metric_learn import (Covariance, LFDA, LMNN, MLKR, NCA,
+from metric_learn import (Covariance, LFDA, LMNN_Supervised, MLKR, NCA,
                           ITML_Supervised, LSML_Supervised,
                           MMC_Supervised, RCA_Supervised, SDML_Supervised,
                           SCML_Supervised)
@@ -52,7 +52,7 @@ class TestSklearnCompat(unittest.TestCase):
     check_estimator(Covariance())
 
   def test_lmnn(self):
-    check_estimator(LMNN())
+    check_estimator(LMNN_Supervised())
 
   def test_lfda(self):
     check_estimator(LFDA())

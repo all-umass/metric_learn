@@ -4,7 +4,7 @@ from sklearn.datasets import load_iris
 from numpy.testing import assert_array_almost_equal
 
 from metric_learn import (
-    LMNN, NCA, LFDA, Covariance, MLKR,
+    LMNN_Supervised, NCA, LFDA, Covariance, MLKR,
     LSML_Supervised, ITML_Supervised, SDML_Supervised, RCA_Supervised,
     MMC_Supervised)
 
@@ -52,11 +52,11 @@ class TestFitTransform(unittest.TestCase):
     assert_array_almost_equal(res_1, res_2)
 
   def test_lmnn(self):
-    lmnn = LMNN(n_neighbors=5, learn_rate=1e-6, verbose=False)
+    lmnn = LMNN_Supervised(n_neighbors=5, learn_rate=1e-6, verbose=False)
     lmnn.fit(self.X, self.y)
     res_1 = lmnn.transform(self.X)
 
-    lmnn = LMNN(n_neighbors=5, learn_rate=1e-6, verbose=False)
+    lmnn = LMNN_Supervised(n_neighbors=5, learn_rate=1e-6, verbose=False)
     res_2 = lmnn.fit_transform(self.X, self.y)
 
     assert_array_almost_equal(res_1, res_2)

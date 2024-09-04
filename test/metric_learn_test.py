@@ -20,7 +20,7 @@ except ImportError:
   HAS_SKGGM = False
 else:
   HAS_SKGGM = True
-from metric_learn import (LMNN, NCA, LFDA, Covariance, MLKR, MMC,
+from metric_learn import (LMNN_Supervised, NCA, LFDA, Covariance, MLKR, MMC,
                           SCML_Supervised, LSML_Supervised,
                           ITML_Supervised, SDML_Supervised, RCA_Supervised,
                           MMC_Supervised, SDML, RCA, ITML, SCML)
@@ -382,7 +382,7 @@ def test_bounds_parameters_invalid(bounds):
 
 class TestLMNN(MetricTestCase):
   def test_iris(self):
-    lmnn = LMNN(n_neighbors=5, learn_rate=1e-6, verbose=False)
+    lmnn = LMNN_Supervised(n_neighbors=5, learn_rate=1e-6, verbose=False)
     lmnn.fit(self.iris_points, self.iris_labels)
 
     csep = class_separation(lmnn.transform(self.iris_points),
@@ -397,7 +397,7 @@ class TestLMNN(MetricTestCase):
     rng = np.random.RandomState(42)
     X, y = make_classification(random_state=rng)
     L = rng.randn(rng.randint(1, X.shape[1] + 1), X.shape[1])
-    lmnn = LMNN()
+    lmnn = LMNN_Supervised()
 
     k = lmnn.n_neighbors
     reg = lmnn.regularization
@@ -500,7 +500,7 @@ def test_loss_func(capsys):
 
   scipy.optimize.check_grad(loss, grad, x0.ravel())
 
-  class LMNN_with_callback(LMNN):
+  class LMNN_with_callback(LMNN_Supervised):
     """ We will use a callback to get the gradient (see later)
     """
 
@@ -575,7 +575,7 @@ def test_loss_func(capsys):
 def test_toy_ex_lmnn(X, y, loss):
   """Test that the loss give the right result on a toy example"""
   L = np.array([[1]])
-  lmnn = LMNN(n_neighbors=1, regularization=0.5)
+  lmnn = LMNN_Supervised(n_neighbors=1, regularization=0.5)
 
   k = lmnn.n_neighbors
   reg = lmnn.regularization
@@ -609,7 +609,7 @@ def test_convergence_simple_example(capsys):
   # LMNN should converge on this simple example, which it did not with
   # this issue: https://github.com/scikit-learn-contrib/metric-learn/issues/88
   X, y = make_classification(random_state=0)
-  lmnn = LMNN(verbose=True)
+  lmnn = LMNN_Supervised(verbose=True)
   lmnn.fit(X, y)
   out, _ = capsys.readouterr()
   assert "LMNN converged with objective" in out
@@ -619,7 +619,7 @@ def test_no_twice_same_objective(capsys):
   # test that the objective function never has twice the same value
   # see https://github.com/scikit-learn-contrib/metric-learn/issues/88
   X, y = make_classification(random_state=0)
-  lmnn = LMNN(verbose=True)
+  lmnn = LMNN_Supervised(verbose=True)
   lmnn.fit(X, y)
   out, _ = capsys.readouterr()
   lines = re.split("\n+", out)
